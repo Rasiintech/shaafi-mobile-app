@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include shaafi_mobile_app *.css
+recursive-include shaafi_mobile_app *.csv
+recursive-include shaafi_mobile_app *.html
+recursive-include shaafi_mobile_app *.ico
+recursive-include shaafi_mobile_app *.js
+recursive-include shaafi_mobile_app *.json
+recursive-include shaafi_mobile_app *.md
+recursive-include shaafi_mobile_app *.png
+recursive-include shaafi_mobile_app *.py
+recursive-include shaafi_mobile_app *.svg
+recursive-include shaafi_mobile_app *.txt
+recursive-exclude shaafi_mobile_app *.pyc
