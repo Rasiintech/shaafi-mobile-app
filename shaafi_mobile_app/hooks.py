@@ -14,6 +14,11 @@ app_license = "MIT"
 # app_include_css = "/assets/shaafi_mobile_app/css/shaafi_mobile_app.css"
 # app_include_js = "/assets/shaafi_mobile_app/js/shaafi_mobile_app.js"
 
+app_include_js = [
+    "/assets/shaafi_mobile_app/js/patient_feedback_sidebar.js"
+]
+
+
 # include js, css files in header of web template
 # web_include_css = "/assets/shaafi_mobile_app/css/shaafi_mobile_app.css"
 # web_include_js = "/assets/shaafi_mobile_app/js/shaafi_mobile_app.js"
