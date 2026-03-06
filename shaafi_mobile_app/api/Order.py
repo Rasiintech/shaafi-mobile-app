@@ -302,10 +302,13 @@ def get_sales_orders_by_mobile(mobile=None):
         patient_name_map = {p["name"]: p["patient_name"] for p in patient_records}
         patient_ids = list(patient_name_map.keys())
 
+        # Only return last 90 days
+        cutoff_date = frappe.utils.add_days(frappe.utils.today(), -90)
+
         # Step 2: Get Sales Orders
         sales_orders = frappe.get_all(
             "Sales Order",
-            filters={"patient": ["in", patient_ids], "docstatus": 1},
+            filters={"patient": ["in", patient_ids], "docstatus": 1, "creation": [">=", cutoff_date]},
             fields=[
                 "name", "transaction_date", "customer", "customer_group", "patient",
                 "grand_total", "status", "delivery_date", "contact_mobile"

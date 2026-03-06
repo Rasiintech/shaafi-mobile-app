@@ -36,10 +36,13 @@ def get_lab_results_by_mobile(mobile=None):
         patient_name_map = {p["name"]: p["patient_name"] for p in patient_records}
         patient_ids = list(patient_name_map.keys())
 
+        # Only return last 90 days
+        cutoff_date = frappe.utils.add_days(frappe.utils.today(), -90)
+
         # Step 2: Fetch Lab Results
         lab_results = frappe.get_all(
             "Lab Result",
-            filters={"patient": ["in", patient_ids]},
+            filters={"patient": ["in", patient_ids], "docstatus": 1, "creation": [">=", cutoff_date]},
             fields=["name", "patient", "patient_name", "practitioner", "type", "template", "docstatus"],
             order_by="modified desc"
         )
