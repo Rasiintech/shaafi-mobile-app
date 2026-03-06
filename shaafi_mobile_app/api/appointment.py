@@ -3,6 +3,7 @@ import frappe
 from shaafi_mobile_app.utils.response_utils import response_util
 from datetime import datetime
 from frappe import _
+from shaafi_mobile_app.utils.erpnext_utils import get_mobile_app_defaults
 
 
 @frappe.whitelist()
@@ -105,6 +106,9 @@ def validate_appointment_booking(PID, doctor_practitioner, appointment_date):
         if not is_follow_up and customer_group == "Membership":
             payable_amount = original_amount * 0.5
 
+
+        defaults = get_mobile_app_defaults()
+
         # ✅ Simulate creation to trigger internal validations
         temp_doc = frappe.new_doc("Que")
         temp_doc.update({
@@ -112,9 +116,9 @@ def validate_appointment_booking(PID, doctor_practitioner, appointment_date):
             "practitioner": doctor_practitioner,
             "date": appointment_date,
             "paid_amount": payable_amount,
-            "mode_of_payment": "Cash",
-            "cost_center": "Main - HH",
-            "appointment_source": "Mobile-App",
+            "mode_of_payment": defaults["mode_of_payment"],
+            "cost_center": defaults["cost_center"], 
+            "appointment_source": "Mobile App",
             "que_type": appointment_type,
             "follow_up": is_follow_up,
         })
@@ -167,6 +171,8 @@ def create_appointment(PID, doctor_practitioner,
                 data=None,
                 http_status_code=400
             )
+
+        defaults = get_mobile_app_defaults()
         
         appointment_date_obj = datetime.strptime(appointment_date, "%Y-%m-%d").date()
 
@@ -234,9 +240,9 @@ def create_appointment(PID, doctor_practitioner,
             "practitioner": doctor_practitioner,
             "date": appointment_date,
             "paid_amount": payable_amount,
-            "mode_of_payment": "Cash",
-            "cost_center": "Main - HH",
-            "appointment_source": "Mobile-App",
+            "mode_of_payment": defaults["mode_of_payment"],
+            "cost_center": defaults["cost_center"],
+            "appointment_source": "Mobile App",
             "que_type": appointment_type,
             "follow_up": is_follow_up,
         })

@@ -2,6 +2,9 @@ import frappe
 import re
 from frappe.utils import flt
 from shaafi_mobile_app.utils.response_utils import response_util
+from shaafi_mobile_app.utils.erpnext_utils import get_mobile_app_defaults
+
+
 
 @frappe.whitelist()
 def validate_sales_order_for_conversion(sales_order_id=None):
@@ -40,6 +43,8 @@ def validate_sales_order_for_conversion(sales_order_id=None):
                     http_status_code=400
                 )
 
+        defaults = get_mobile_app_defaults()
+
         # Create Sales Invoice
         # si_doc = frappe.new_doc("Sales Invoice")
         # si_doc.customer = so_doc.customer
@@ -54,7 +59,7 @@ def validate_sales_order_for_conversion(sales_order_id=None):
         # si_doc.set_posting_time = 1
         # si_doc.posting_date = frappe.utils.nowdate()
         # si_doc.ref_practitioner = so_doc.ref_practitioner
-        # si_doc.cost_center = so_doc.get("cost_center") or "Main - HH"
+        # si_doc.cost_center = defaults["cost_center"]
 
         # for item in so_doc.items:
         #     si_doc.append("items", {
@@ -65,13 +70,13 @@ def validate_sales_order_for_conversion(sales_order_id=None):
         #         "rate": item.rate,
         #         "uom": item.uom,
         #         "conversion_factor": item.conversion_factor,
-        #         "cost_center": so_doc.get("cost_center") or "Main - HH",
+        #         "cost_center": defaults["cost_center"],
         #         "so_detail": item.name,
         #         "sales_order": so_doc.name
         #     })
             
         # si_doc.append("payments", {
-        #     "mode_of_payment": "Cash",
+        #     "mode_of_payment": defaults["mode_of_payment"],
         #     "amount": so_doc.rounded_total or so_doc.grand_total,
         # })
         
@@ -173,6 +178,8 @@ def convert_sales_order_to_invoice(sales_order_id=None):
                     http_status_code=400
                 )
 
+        defaults = get_mobile_app_defaults()
+
         # Create Sales Invoice
         si_doc = frappe.new_doc("Sales Invoice")
         si_doc.customer = so_doc.customer
@@ -187,7 +194,7 @@ def convert_sales_order_to_invoice(sales_order_id=None):
         si_doc.set_posting_time = 1
         si_doc.posting_date = frappe.utils.nowdate()
         si_doc.ref_practitioner = so_doc.ref_practitioner
-        si_doc.cost_center = so_doc.get("cost_center") or "Main - HH"
+        si_doc.cost_center = defaults["cost_center"]
 
         for item in so_doc.items:
             si_doc.append("items", {
@@ -198,13 +205,13 @@ def convert_sales_order_to_invoice(sales_order_id=None):
                 "rate": item.rate,
                 "uom": item.uom,
                 "conversion_factor": item.conversion_factor,
-                "cost_center": so_doc.get("cost_center") or "Main - HH",
+                "cost_center": defaults["cost_center"],
                 "so_detail": item.name,
                 "sales_order": so_doc.name
             })
             
         si_doc.append("payments", {
-            "mode_of_payment": "Cash",
+            "mode_of_payment": defaults["mode_of_payment"],
             "amount": so_doc.rounded_total or so_doc.grand_total,
         })
         si_doc.insert(ignore_permissions=True)
