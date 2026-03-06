@@ -111,7 +111,7 @@ def validate_appointment_booking(PID, doctor_practitioner, appointment_date):
             "patient": PID,
             "practitioner": doctor_practitioner,
             "date": appointment_date,
-            "payable_amount": payable_amount,
+            "paid_amount": payable_amount,
             "mode_of_payment": "Cash",
             "cost_center": "Main - HH",
             "appointment_source": "Mobile-App",
@@ -125,7 +125,7 @@ def validate_appointment_booking(PID, doctor_practitioner, appointment_date):
             message="Patient is eligible to book appointment.",
             data={
                 "appointment_type": appointment_type,
-                "payable_amount": payable_amount,
+                "paid_amount": payable_amount,
                 "original_amount": original_amount,
                 "is_follow_up": is_follow_up,
                 "customer_group" : customer_group
@@ -233,7 +233,7 @@ def create_appointment(PID, doctor_practitioner,
             "patient": PID,
             "practitioner": doctor_practitioner,
             "date": appointment_date,
-            "payable_amount": payable_amount,
+            "paid_amount": payable_amount,
             "mode_of_payment": "Cash",
             "cost_center": "Main - HH",
             "appointment_source": "Mobile-App",
@@ -283,7 +283,7 @@ def get_appointments(mobile_no=None):
         appointments = frappe.get_all(
             "Que",
             filters={"mobile": mobile_no, "status": ["!=", "Canceled"]},
-            fields=["name", "patient","patient_name", "practitioner", "payable_amount", "creation", 
+            fields=["name", "patient","patient_name", "practitioner", "paid_amount", "creation", 
                     "appointment_source"
                     ],
             order_by="creation desc"

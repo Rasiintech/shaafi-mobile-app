@@ -204,3 +204,14 @@ app_include_js = [
 # auth_hooks = [
 #	"shaafi_mobile_app.auth.validate"
 # ]
+
+
+# Fixtures
+#  run this command to run the fixtures 
+#  bench export-fixtures --app shaafi_mobile_app
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [["module", "=", "Shaafi Mobile App"]]
+    }
+]

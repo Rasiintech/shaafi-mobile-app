@@ -1,6 +1,5 @@
 import frappe
 from shaafi_mobile_app.utils.response_utils import response_util
-from shaafi_mobile_app.utils.image_utils import format_image_url
 
 
 @frappe.whitelist()
@@ -60,7 +59,7 @@ def patient_login(mobile_number):
                     "district": patient_info.territory,
                     "age": patient_info.p_age,
                     "Gender": patient_info.sex,
-                    "image": format_image_url(patient_info.get('image'))
+                    "image": patient_info.get('image')
                 },
                 http_status_code=200
             )
@@ -157,7 +156,7 @@ def get_patients_with_same_mobile(mobile_number, doctor_name=None):
             patient_id = patient.get("name")
 
             # Format image URL
-            patient["image"] = format_image_url(patient.get("image"))
+            patient["image"] = patient.get("image")
 
             # Ensure required fields exist
             patient["customer_group"] = patient.get("customer_group") or "All Customer Groups"
@@ -235,7 +234,7 @@ def get_patient_profile(patient_id, fcm_token=None):
                 "age": patient_doc.p_age,
                 "mobile": patient_doc.mobile_no,
                 "district": patient_doc.territory,
-                "image": format_image_url(patient_doc.get('image'))
+                "image": patient_doc.get('image')
             },
             http_status_code=200
         )

@@ -1,6 +1,7 @@
 import frappe
-from shaafi_mobile_app.utils.image_utils import format_image_url
 from shaafi_mobile_app.utils.response_utils import response_util
+import time
+
 
 @frappe.whitelist()
 def get_all_doctors():
@@ -8,16 +9,24 @@ def get_all_doctors():
         # Fetch all active healthcare practitioners (doctors)
         doctors = frappe.get_all(
             "Healthcare Practitioner",
-            filters={"status": "Active", "hide_dcotor": 0},
+            filters={"status": "Active", "hide_doctor": 0},
             fields=[
                 "name", 
                 "op_consulting_charge", 
                 "department", 
                 "image", 
-                "services",
-                "experience", 
-                "available_time"
+                "about",
+                "experience_years", 
+                "available_time",
+                "hide_doctor",
+                "total_patients",
+                "rating"
             ]
+        )
+
+        departments = frappe.get_all(
+            "Medical Department",
+            fields=["name", "department", "image"]
         )
 
         # Check if doctors list is empty
@@ -29,15 +38,12 @@ def get_all_doctors():
                 http_status_code=404
             )
 
-        # Format the image URLs using the utility function
-        for doctor in doctors:
-            doctor["image"] = format_image_url(doctor.get("image"))
-
         # Return the list of doctors
         return response_util(
             status="success",
             message="Doctors fetched successfully",
-            data=doctors,
+            # data=doctors,
+            data={"doctors": doctors, "departments": departments},
             http_status_code=200
         )
 
@@ -59,10 +65,10 @@ def get_doctors_by_department(department):
             "Healthcare Practitioner",
             filters={
                 "status": "Active",
-                "hide_dcotor": 0,
+                "hide_doctor": 0,
                 "department": department
             },
-            fields=["practitioner_name", "op_consulting_charge", "department", "image", "services", "experience", "available_time"]
+            fields=["practitioner_name", "op_consulting_charge", "department", "image", "about", "experience_years", "available_time", "hide_doctor", "total_patients", "rating"]
         )
 
         # Check if doctors list is empty
@@ -74,17 +80,6 @@ def get_doctors_by_department(department):
                 "Data": None
             }
         
-
-        # Format the image URLs if available
-        system_host_url = "https://102.68.17.210"  # Replace with your actual host URL
-        for doctor in doctors:
-            if doctor.image:
-                # Ensure image starts with /files/ and add a cache-busting query parameter
-                if not doctor.image.startswith('/files/'):
-                    doctor.image = f"/files/{doctor.image}"
-                doctor.image = f"{system_host_url}{doctor.image}?v={int(time.time())}"
-            else:
-                doctor.image = None
 
         # Return the filtered list of doctors
         frappe.response['http_status_code'] = 200
@@ -111,7 +106,7 @@ def get_all_departments():
         # Fetch all departments
         departments = frappe.get_all(
             "Medical Department",  # Replace with the exact Doctype name for your departments if it's different
-            fields=["name", "department", "department_img"]  # Make sure 'department_img' is a valid field in your Doctype
+            fields=["name", "department", "image"]  # Make sure 'image' is a valid field in your Doctype
         )
 
         # Check if departments list is empty
@@ -122,17 +117,6 @@ def get_all_departments():
                 "msg": "No departments found in the system.",
                 "Data": None
             }
-
-        # Format the image URLs if available
-        system_host_url = "https://102.68.17.210"  # Replace with your actual host URL
-        for dep in departments:
-            if dep.department_img:
-                # Ensure image starts with /files/ and add a cache-busting query parameter
-                if not dep.department_img.startswith('/files/'):
-                    dep.department_img = f"/files/{dep.department_img}"
-                dep.department_img = f"{system_host_url}{dep.department_img}?v={int(time.time())}"
-            else:
-                dep.department_img = None  # If no image, set to None
 
         # Return the list of departments
         frappe.response['http_status_code'] = 200
